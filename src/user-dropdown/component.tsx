@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
 import { UserSession } from '../core/models/user-session';
-const { fetchNewRelease } = require('../util/api');
+import { fetchNewRelease } from '../util/api';
 const reddot = require('../img/reddot.svg');
 import './component.sass';
 

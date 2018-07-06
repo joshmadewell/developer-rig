@@ -1,9 +1,41 @@
+import { ExtensionViews } from '../core/models/extension';
 import { createSignedToken } from '../util/token';
 import { missingConfigurations } from '../util/errors';
 import { RIG_ROLE } from '../constants/rig';
 
-export function convertViews(data) {
-  const views = {};
+export interface ViewsResponse {
+  component?: {
+    viewer_url: string;
+    aspect_height: number;
+    aspect_width: number;
+    size: number;
+    zoom: boolean;
+    zoom_pixels: number;
+  };
+  config?: {
+    viewer_url: string;
+  };
+  hidden?: {
+    viewer_url: string;
+  };
+  live_config?: {
+    viewer_url: string;
+  };
+  mobile?: {
+    viewer_url: string;
+  };
+  panel?: {
+    height: number;
+    viewer_url: string;
+  };
+  video_overlay?: {
+    viewer_url: string;
+  };
+}
+
+export function convertViews(data: ViewsResponse): ExtensionViews {
+  const views: ExtensionViews = {};
+
   if (data.config) {
     views.config = { viewerUrl: data.config.viewer_url };
   }
@@ -35,7 +67,6 @@ export function convertViews(data) {
     views.component = {
       aspectHeight: data.component.aspect_height,
       aspectWidth: data.component.aspect_width,
-      size: data.component.size,
       viewerUrl: data.component.viewer_url,
       zoom: data.component.zoom,
       zoomPixels: data.component.zoom_pixels,
@@ -45,7 +76,7 @@ export function convertViews(data) {
   return views;
 }
 
-export function fetchExtensionManifest(host, clientId, version, jwt, onSuccess, onError) {
+export function fetchExtensionManifest(host: string, clientId: string, version: string, jwt: string, onSuccess: Function, onError: Function) {
   const api = 'https://' + host + '/kraken/extensions/search';
   return fetch(api, {
     method: 'POST',
@@ -81,7 +112,7 @@ export function fetchExtensionManifest(host, clientId, version, jwt, onSuccess, 
     });
 }
 
-export function fetchManifest(host, clientId, username, version, channelId, secret, onSuccess, onError) {
+export function fetchManifest(host: string, clientId: string, username: string, version: string, channelId: string, secret: string, onSuccess: Function, onError: Function) {
   if (!username || !clientId || !version || !channelId || !secret) {
     onError(missingConfigurations({
       'EXT_CLIENT_ID': clientId,
@@ -149,7 +180,7 @@ export function fetchUserInfo(host, accessToken, onSuccess, onError) {
 
 export function fetchProducts(host, clientId, token, onSuccess, onError) {
   const api = 'https://' + host + '/v5/bits/extensions/twitch.ext.' + clientId + '/products?includeAll=true';
-  
+
   fetch(api, {
     method: 'GET',
     headers: {
@@ -169,7 +200,7 @@ export function fetchProducts(host, clientId, token, onSuccess, onError) {
       if (!products) {
         onError('Unable to get products for clientId: ' + clientId);
         return null;
-      } 
+      }
       const serializedProducts = products.map(p => {
         let product = {
           sku: p.sku || '',
