@@ -1,4 +1,12 @@
-import { convertViews, fetchManifest, fetchExtensionManifest, fetchUserInfo, fetchProducts } from './api';
+import { Product } from '../core/models/product';
+import {
+  ViewsResponse,
+  convertViews,
+  fetchManifest,
+  fetchExtensionManifest,
+  fetchUserInfo,
+  fetchProducts
+} from './api';
 import {
   mockFetchError,
   mockFetchForExtensionManifest,
@@ -7,22 +15,24 @@ import {
   mockFetchProducts
 } from '../tests/mocks';
 
+let globalAny = global as any;
+
 describe('api', () => {
   describe('fetchManifest', () => {
     beforeEach(function() {
-      global.fetch = jest.fn().mockImplementation(mockFetchForManifest);
+      globalAny.fetch = jest.fn().mockImplementation(mockFetchForManifest);
     });
 
     it('should return data', async function () {
-      await fetchManifest('127.0.0.1:8080', 'clientId', 'username', 'version', 'channelId', 'secret', data => {
+      await fetchManifest('127.0.0.1:8080', 'clientId', 'username', 'version', 'channelId', 'secret', (data: any) => {
         expect(data).toBeDefined();
       }, jest.fn());
     });
 
     it('on error should be fired ', async function () {
       const onError = jest.fn();
-      global.fetch = jest.fn().mockImplementation(mockFetchError);
-      await fetchManifest('127.0.0.1:8080', 'clientId', '', '', '', '', data => {
+      globalAny.fetch = jest.fn().mockImplementation(mockFetchError);
+      await fetchManifest('127.0.0.1:8080', 'clientId', '', '', '', '', (data: any) => {
         expect(data).toBeDefined();
       }, onError);
       expect(onError).toHaveBeenCalled();
@@ -31,36 +41,36 @@ describe('api', () => {
 
   describe('fetchExtensionManifest', () => {
     beforeEach(function() {
-      global.fetch = jest.fn().mockImplementation(mockFetchForExtensionManifest);
+      globalAny.fetch = jest.fn().mockImplementation(mockFetchForExtensionManifest);
     });
 
     it('should return data', async function () {
-      await fetchExtensionManifest('127.0.0.1:8080', 'clientId', 'version', 'jwt', (data) => {
+      await fetchExtensionManifest('127.0.0.1:8080', 'clientId', 'version', 'jwt', (data: any) => {
         expect(data).toBeDefined();
-      });
+      }, () => { });
     });
   });
 
   describe('fetchUserInfo', () => {
     beforeEach(() => {
-      global.fetch = jest.fn().mockImplementation(mockFetchForUserInfo);
+      globalAny.fetch = jest.fn().mockImplementation(mockFetchForUserInfo);
     });
     it('should return data', async function () {
-      await fetchUserInfo('127.0.0.1:8080', 'token', (data) => {
+      await fetchUserInfo('127.0.0.1:8080', 'token', (data: any) => {
         expect(data).toBeDefined();
-      });
+      }, () => { });
     });
 
     it('on error should fire', async function () {
       const onError = jest.fn()
-      global.fetch = jest.fn().mockImplementation(mockFetchError);
+      globalAny.fetch = jest.fn().mockImplementation(mockFetchError);
       await fetchUserInfo('127.0.0.1:8080', 'token', () => { }, onError);
       expect(onError).toHaveBeenCalled();
     });
   });
 
   describe('convertViews', () => {
-    const data = {
+    const data: ViewsResponse = {
       config: {
         viewer_url: 'test',
       },
@@ -75,6 +85,7 @@ describe('api', () => {
       },
       panel: {
         viewer_url: 'test',
+        height: 300,
       },
     };
 
@@ -90,17 +101,17 @@ describe('api', () => {
 
   describe('fetchProducts', () => {
     beforeEach(function() {
-      global.fetch = jest.fn().mockImplementation(mockFetchProducts);
+      globalAny.fetch = jest.fn().mockImplementation(mockFetchProducts);
     });
 
     it('should return products', async function () {
-      await fetchProducts('127.0.0.1:8080', 'clientId', (products) => {
+      await fetchProducts('127.0.0.1:8080', 'clientId', '', (products: Product[]) => {
         expect(products).toBeDefined();
       }, jest.fn());
     });
 
     it('should serialize products correctly', async function () {
-      await fetchProducts('127.0.0.1:8080', 'clientId', (products) => {
+      await fetchProducts('127.0.0.1:8080', 'clientId', '', (products: Product[]) => {
         expect(products).toHaveLength(2);
         products.forEach(product => {
           expect(product).toMatchObject({

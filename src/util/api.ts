@@ -1,5 +1,5 @@
 import { ExtensionViews } from '../core/models/extension';
-import { Product } from '../core/models/product';
+import { Product, DeserializedProduct } from '../core/models/product';
 import { createSignedToken } from '../util/token';
 import { missingConfigurations } from '../util/errors';
 import { RigRole } from '../constants/rig';
@@ -202,7 +202,7 @@ export function fetchProducts(host: string, clientId: string, token: string, onS
         onError('Unable to get products for clientId: ' + clientId);
         return null;
       }
-      const serializedProducts = products.map(p => {
+      const serializedProducts = products.map((p: DeserializedProduct) => {
         let product = {
           sku: p.sku || '',
           displayName: p.displayName || '',

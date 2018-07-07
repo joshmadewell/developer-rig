@@ -4,12 +4,14 @@ import { createToken } from './token';
 
 describe('extension', () => {
   const manifest = {
+    anchor: 'panel',
     author_name: 'test',
     id: 'id',
     description: 'desc',
     icon_url: 'test.png',
+    icon_urls: ['test'],
     name: 'test',
-    request_identity: 'test',
+    request_identity_link: false,
     sku: 'sku',
     state: 'state',
     summary: 'summary',
@@ -20,8 +22,14 @@ describe('extension', () => {
       },
     },
     version: '0.1',
-    whitelisted_config_urls: [],
-    whitelisted_panel_urls: [],
+    whitelisted_config_urls: ['test'],
+    whitelisted_panel_urls: ['test'],
+    bits_enabled: false,
+    can_install: true,
+    eula_tos_url: 'test.biz',
+    support_email: 'test@test.biz',
+    privacy_policy_url: 'test.biz',
+    installation_count: -42,
   };
   const index = '0';
   const role = ViewerTypes.LoggedOut;
@@ -39,7 +47,7 @@ describe('extension', () => {
       iconUrl: manifest.icon_url,
       id: manifest.id + ':' + index,
       name: manifest.name,
-      requestIdentityLink: manifest.request_identity,
+      requestIdentityLink: manifest.request_identity_link,
       sku: manifest.sku,
       state: manifest.state,
       summary: manifest.summary,

@@ -1,27 +1,41 @@
-export function mockGlobals() {
-  global.process.env.EXT_CLIENT_ID = 'test';
-  global.process.env.EXT_SECRET = 'test';
-  global.process.env.EXT_VERSION = 'test';
-  global.process.env.EXT_CHANNEL_ID = 'test';
-  global.process.env.EXT_USER_NAME = 'test';
+export interface ExtensionMode {
+  Viewer: string;
+  Dashboard: string;
+  Config: string;
+}
 
-  global.localStorage = {};
-  global.localStorage.getItem = (key) => {
-    if (!(key in global.localStorage)) {
-      return null;
-    }
-    return global.localStorage[key];
-  };
+export interface ExtensionViewType {
+  Component: string;
+  Config: string;
+  Hidden: string;
+  LiveConfig: string;
+  Mobile: string;
+  Panel: string;
+  VideoOverlay: string;
+}
+export interface ExtensionPlatform {
+  Web: string;
+  Mobile: string;
+}
 
-  global.localStorage.setItem = (key, value) => {
-    global.localStorage[key] = value;
-  };
+export interface ExtensionAnchor {
+  Panel: string;
+  Overlay: string;
+  Component: string;
+}
 
-  global.window.rig = {};
-  global.window.rig.history = [];
-  global.window.location = {};
+export interface ExtensionCoordinator {
+  ExtensionMode: ExtensionMode;
+  ExtensionViewType: ExtensionViewType;
+  ExtensionPlatform: ExtensionPlatform;
+  ExtensionFrame: Function;
+  ExtensionAnchor: ExtensionAnchor;
+  getComponentPositionFromView: Function;
+  getComponentSizeFromView: Function;
+}
 
-  const coordinator = {}
+export function newMockCoordinator(): ExtensionCoordinator {
+  let coordinator: ExtensionCoordinator;
   coordinator.ExtensionMode = {
     Viewer: 'viewer',
     Dashboard: 'dashboard',
@@ -69,7 +83,5 @@ export function mockGlobals() {
       zoomScale: 1024,
     }
   }
-
-  global.window['extension-coordinator'] = coordinator;
+  return coordinator;
 }
-

@@ -26,3 +26,22 @@ export type ExtensionViews = {
   panel?: PanelView;
   videoOverlay?: VideoOverlayView;
 };
+
+export interface Extension {
+  authorName: string;
+  id: string;
+  description: string;
+  iconUrl: string;
+  name: string;
+  requestIdentity: boolean
+  sku: string;
+  state: string;
+  summary: string;
+  token: string;
+  vendorCode: string;
+  version: string;
+  views: ExtensionViews;
+  whitelistedConfigUrls: string[];
+  whitelistedPanelUrls: string[];
+  channelId: string;
+}

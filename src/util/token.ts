@@ -11,7 +11,7 @@ interface PubsubPerms {
   send?: string[];
 }
 
-interface PubsubPayload {
+export interface TokenPayload {
   exp: number;
   user_id?: string;
   opaque_user_id: string;
@@ -56,7 +56,7 @@ export function createSignedToken(role: string, opaqueUserId: string, userId: st
     pubsub_perms.listen = ['*']
   }
 
-  const payload: PubsubPayload = {
+  const payload: TokenPayload = {
     exp: Math.floor(((Date.now() + OneYearMS) / 1000)),
     opaque_user_id: opaqueUserId,
     channel_id: channelId,
