@@ -1,7 +1,8 @@
 import { ExtensionViews } from '../core/models/extension';
+import { Product } from '../core/models/product';
 import { createSignedToken } from '../util/token';
 import { missingConfigurations } from '../util/errors';
-import { RIG_ROLE } from '../constants/rig';
+import { RigRole } from '../constants/rig';
 
 export interface ViewsResponse {
   component?: {
@@ -153,12 +154,12 @@ export function fetchManifest(host: string, clientId: string, username: string, 
     const userId = data[0]['id'];
     onSuccess({ userId: userId });
 
-    const token = createSignedToken(RIG_ROLE, '', userId, channelId, secret);
+    const token = createSignedToken(RigRole, '', userId, channelId, secret);
     return fetchExtensionManifest(host, clientId, version, token, onSuccess, onError);
   });
 }
 
-export function fetchUserInfo(host, accessToken, onSuccess, onError) {
+export function fetchUserInfo(host: string, accessToken: string, onSuccess: Function, onError: Function) {
   const api = 'https://' + host + '/helix/users';
   return fetch(api, {
     method: 'GET',
@@ -178,7 +179,7 @@ export function fetchUserInfo(host, accessToken, onSuccess, onError) {
     });
 }
 
-export function fetchProducts(host, clientId, token, onSuccess, onError) {
+export function fetchProducts(host: string, clientId: string, token: string, onSuccess: Function, onError: Function) {
   const api = 'https://' + host + '/v5/bits/extensions/twitch.ext.' + clientId + '/products?includeAll=true';
 
   fetch(api, {
@@ -219,7 +220,7 @@ export function fetchProducts(host, clientId, token, onSuccess, onError) {
     });
 }
 
-export function saveProduct(host, clientId, token, product, index, onSuccess, onError) {
+export function saveProduct(host: string, clientId: string, token: string, product: Product, index: number, onSuccess: Function, onError: Function) {
   const api = 'https://' + host + '/v5/bits/extensions/twitch.ext.' + clientId + '/products/put';
   const deserializedProduct = {
     domain: 'twitch.ext.' + clientId,
@@ -252,7 +253,7 @@ export function saveProduct(host, clientId, token, product, index, onSuccess, on
     });
 }
 
-export function fetchNewRelease(onSuccess, onError) {
+export function fetchNewRelease(onSuccess: Function, onError: Function) {
   const api = 'https://api.github.com/repos/twitchdev/developer-rig/releases/latest';
   return fetch(api, {
     method: 'GET',

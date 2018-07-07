@@ -1,5 +1,3 @@
-const ExtensionViewType = (window as any)['extension-coordinator'];
-
 export type ExtensionView = {
   viewerUrl: string;
 };
